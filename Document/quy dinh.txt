@@ -1,0 +1,16 @@
+﻿Đồ án thực hành môn Lập trình ứng dụng Java.
+Ngôn ngữ: Java.
+Framework: Swing, Hibernate.
+Database: MySQL, hoặc PostgreSQL hoặc MongoDB.
+Đồ án làm theo nhóm, nhóm tối đa 3 thành viên.
+Sinh viên đăng kí đồ án đến hết thứ 3, ngày 05/03. Sau đó, thầy sẽ chia đồ án.
+
+Đồ án quản lí bằng GitHub. Thành viên nào có quá ít commit, hoặc chỉ tập trung commit 1 trong giai đoạn, hoặc spam commit sẽ 0đ môn học.
+
+Trong file PDF là danh sách các BIỂU MẪU mà cửa hàng / thư viện / phòng khám / quản lí giải VDQG đã dùng để quản lí nghiệp vụ.
+Nhóm hãy viết 1 ứng dụng desktop:
+1. Đáp ứng các nghiệp vụ yêu cầu.
+2. Phải phân quyền, ít nhất có 2 loại người dùng: nhân viên và quản lí.
+3. Phải cài đặt những màn hình phụ trợ thêm: vd xem / xóa / sửa / tìm kiếm / sắp xếp các mục.
+4. Quản lí phải xem được ít nhất 4 loại báo cáo.
+5. Số chức năng dự kiến: >= 15 chức năng.
