@@ -15,6 +15,7 @@ import DAO.TAIKHOANDAO;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.Font;
 
 public class DangNhap extends JFrame {
 
@@ -33,33 +34,38 @@ public class DangNhap extends JFrame {
 	 */
 	public DangNhap() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 334, 270);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel lblUserName = new JLabel("User name");
-		lblUserName.setBounds(10, 11, 61, 14);
+		lblUserName.setBounds(40, 82, 61, 14);
 		contentPane.add(lblUserName);
 		
 		txtUserName = new JTextField();
-		txtUserName.setBounds(96, 8, 86, 20);
+		txtUserName.setBounds(130, 79, 113, 20);
 		contentPane.add(txtUserName);
 		txtUserName.setColumns(10);
 		
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(10, 82, 46, 14);
+		lblPassword.setBounds(40, 121, 46, 14);
 		contentPane.add(lblPassword);
 		
 		txtPassword = new JTextField();
-		txtPassword.setBounds(96, 79, 86, 20);
+		txtPassword.setBounds(130, 118, 113, 20);
 		contentPane.add(txtPassword);
 		txtPassword.setColumns(10);
 		
 		btnLogin = new JButton("Login");
-		btnLogin.setBounds(62, 131, 89, 23);
+		btnLogin.setBounds(127, 175, 89, 23);
 		contentPane.add(btnLogin);
+		
+		JLabel lblngNhp = new JLabel("ĐĂNG NHẬP");
+		lblngNhp.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblngNhp.setBounds(93, 26, 196, 42);
+		contentPane.add(lblngNhp);
 		addControll();
 		//Xu ly dang nhap
 		
