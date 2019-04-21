@@ -2,6 +2,7 @@ package MainRun;
 
 import java.awt.EventQueue;
 
+import GUI.DangKi;
 import GUI.DangNhap;
 
 public class RunGUI {

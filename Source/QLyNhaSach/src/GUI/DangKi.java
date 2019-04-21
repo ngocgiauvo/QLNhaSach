@@ -47,8 +47,9 @@ public class DangKi extends JFrame {
 	 */
 	public DangKi() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 404, 427);
+		setBounds(100, 100, 447, 427);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(100, 149, 237));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -56,19 +57,19 @@ public class DangKi extends JFrame {
 		JLabel lblngK = new JLabel("\u0110\u0102NG K\u00DD");
 		lblngK.setForeground(Color.BLUE);
 		lblngK.setFont(new Font("Times New Roman", Font.BOLD, 24));
-		lblngK.setBounds(143, 29, 139, 26);
+		lblngK.setBounds(148, 41, 139, 26);
 		contentPane.add(lblngK);
 		
 		JLabel lblUsername = new JLabel("T\u00EAn \u0111\u0103ng nh\u1EADp");
-		lblUsername.setBounds(33, 78, 78, 26);
+		lblUsername.setBounds(33, 78, 101, 26);
 		contentPane.add(lblUsername);
 		
 		JLabel lblMtKhu = new JLabel("M\u1EADt Kh\u1EA9u");
-		lblMtKhu.setBounds(33, 118, 46, 14);
+		lblMtKhu.setBounds(33, 115, 81, 14);
 		contentPane.add(lblMtKhu);
 		
 		JLabel lblNhpLiMt = new JLabel("Nh\u1EADp l\u1EA1i m\u1EADt kh\u1EA9u");
-		lblNhpLiMt.setBounds(33, 143, 112, 14);
+		lblNhpLiMt.setBounds(33, 143, 138, 14);
 		contentPane.add(lblNhpLiMt);
 		
 		JButton btnngK = new JButton("\u0110\u0103ng K\u00FD");
@@ -78,21 +79,21 @@ public class DangKi extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		btnngK.setBounds(223, 354, 89, 23);
+		btnngK.setBounds(162, 323, 89, 23);
 		contentPane.add(btnngK);
 		
 		txtTenDangNhap = new JTextField();
-		txtTenDangNhap.setBounds(142, 81, 169, 20);
+		txtTenDangNhap.setBounds(181, 78, 169, 20);
 		contentPane.add(txtTenDangNhap);
 		txtTenDangNhap.setColumns(10);
 		
 		txtMatKhau = new JTextField();
-		txtMatKhau.setBounds(142, 112, 170, 20);
+		txtMatKhau.setBounds(181, 109, 170, 20);
 		contentPane.add(txtMatKhau);
 		txtMatKhau.setColumns(10);
 		
 		txtNhapLaiMK = new JTextField();
-		txtNhapLaiMK.setBounds(142, 140, 170, 20);
+		txtNhapLaiMK.setBounds(181, 137, 170, 20);
 		contentPane.add(txtNhapLaiMK);
 		txtNhapLaiMK.setColumns(10);
 		
@@ -102,7 +103,7 @@ public class DangKi extends JFrame {
 		
 		txtHoten = new JTextField();
 		txtHoten.setColumns(10);
-		txtHoten.setBounds(142, 171, 170, 20);
+		txtHoten.setBounds(181, 168, 170, 20);
 		contentPane.add(txtHoten);
 		
 		JLabel lblCmnd = new JLabel("CMND");
@@ -111,7 +112,7 @@ public class DangKi extends JFrame {
 		
 		txtCmnd = new JTextField();
 		txtCmnd.setColumns(10);
-		txtCmnd.setBounds(142, 202, 170, 20);
+		txtCmnd.setBounds(181, 199, 170, 20);
 		contentPane.add(txtCmnd);
 		
 		JLabel lblaCh = new JLabel("\u0110\u1ECBa Ch\u1EC9");
@@ -120,7 +121,7 @@ public class DangKi extends JFrame {
 		
 		txtDiaChi = new JTextField();
 		txtDiaChi.setColumns(10);
-		txtDiaChi.setBounds(142, 233, 170, 20);
+		txtDiaChi.setBounds(181, 230, 170, 20);
 		contentPane.add(txtDiaChi);
 		
 		JLabel lblSt = new JLabel("S\u0110T");
@@ -129,7 +130,7 @@ public class DangKi extends JFrame {
 		
 		txtSDT = new JTextField();
 		txtSDT.setColumns(10);
-		txtSDT.setBounds(142, 264, 170, 20);
+		txtSDT.setBounds(181, 261, 170, 20);
 		contentPane.add(txtSDT);
 		
 		JLabel lblEmail = new JLabel("Email");
@@ -138,7 +139,13 @@ public class DangKi extends JFrame {
 		
 		txtEmail = new JTextField();
 		txtEmail.setColumns(10);
-		txtEmail.setBounds(142, 295, 170, 20);
+		txtEmail.setBounds(181, 292, 170, 20);
 		contentPane.add(txtEmail);
+		
+		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnRefresh.setBackground(Color.MAGENTA);
+		btnRefresh.setBounds(261, 323, 89, 23);
+		contentPane.add(btnRefresh);
 	}
 }
