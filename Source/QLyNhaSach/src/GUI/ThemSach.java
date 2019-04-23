@@ -57,9 +57,6 @@ public class ThemSach extends JPanel {
 		textField.setBounds(112, 114, 109, 20);
 		add(textField);
 		
-		table = new JTable();
-		table.setBounds(80, 222, 65, -25);
-		add(table);
 		
 		JList list = new JList();
 		list.setBounds(80, 210, 1, 1);
@@ -84,10 +81,6 @@ public class ThemSach extends JPanel {
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.setBounds(268, 117, 89, 23);
 		add(btnRefresh);
-		
-		table_1 = new JTable();
-		table_1.setBounds(69, 210, 1, 1);
-		add(table_1);
 		
 		JList list_2 = new JList();
 		list_2.setBounds(125, 283, 244, -72);
