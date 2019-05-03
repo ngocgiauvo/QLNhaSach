@@ -67,6 +67,14 @@ public class Main extends JFrame {
 		menuBar.add(mnDanhmuc);
 		
 		JMenuItem mnDSSach = new JMenuItem("Danh s\u00E1ch s\u00E1ch");
+		mnDSSach.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DSSach ds = new DSSach();
+				contentPane.removeAll();
+				contentPane.add(ds);
+				revalidate();
+			}
+		});
 		mnDanhmuc.add(mnDSSach);
 		
 		JMenuItem mnTheloaisach = new JMenuItem("Th\u1EC3 lo\u1EA1i s\u00E1ch");
