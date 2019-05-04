@@ -9,41 +9,55 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
+import org.jdatepicker.DateModel;
+import org.jdatepicker.DatePicker;
+import org.jdatepicker.JDatePicker;
+
+import dao.TheLoaiDAO;
 import entities.*;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultComboBoxModel;
+
+import java.awt.CardLayout;
 
 public class PhieuNhapSach extends JPanel {
 	private JTable tblNhapsach;
+	private static ArrayList<Theloai> theloai;
+	private static DatePicker picker = new JDatePicker();
 
 	/**
 	 * Create the panel.
 	 */
 	public PhieuNhapSach() {
 		setLayout(null);
+		TheLoaiDAO tlDAO = new TheLoaiDAO();
+		theloai = tlDAO.layTheLoai();
 		
 		JPanel panelHead = new JPanel();
-		panelHead.setBounds(10, 11, 865, 87);
-		panelHead.setLayout(null);
+		panelHead.setBounds(10, 11, 865, 40);
 		add(panelHead);
-		
-		JLabel lblNgyNhp = new JLabel("Ngày nhập:");
-		lblNgyNhp.setBounds(246, 59, 81, 17);
-		panelHead.add(lblNgyNhp);
+		panelHead.setLayout(null);
 		
 		JLabel lblPhiuNhpSch = new JLabel("PHIẾU NHẬP SÁCH");
 		lblPhiuNhpSch.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPhiuNhpSch.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblPhiuNhpSch.setBounds(98, 8, 673, 40);
+		lblPhiuNhpSch.setBounds(96, 0, 673, 40);
 		panelHead.add(lblPhiuNhpSch);
 		
 		JPanel panelMain = new JPanel();
@@ -64,7 +78,7 @@ public class PhieuNhapSach extends JPanel {
 		tblNhapsach.getColumnModel().getColumn(4).setMaxWidth(75);
 		
 		JPanel panelBtn = new JPanel();
-		panelBtn.setBounds(745, 109, 130, 420);
+		panelBtn.setBounds(745, 109, 130, 255);
 		add(panelBtn);
 		panelBtn.setLayout(null);
 		
@@ -77,6 +91,15 @@ public class PhieuNhapSach extends JPanel {
 				curModel.addRow(rowData);
 				
 				tblNhapsach.setModel(curModel);
+				
+				TableColumn theLoaiColumn = tblNhapsach.getColumnModel().getColumn(2);
+				JComboBox cbTheLoai = new JComboBox();
+				
+				DefaultComboBoxModel cbModel = setDataForCombobox();
+				cbTheLoai.setModel(cbModel);
+				cbTheLoai.setSelectedItem(null);
+				
+				theLoaiColumn.setCellEditor(new DefaultCellEditor(cbTheLoai));
 			}
 		});
 		btnThem.setBounds(10, 11, 110, 28);
@@ -98,8 +121,33 @@ public class PhieuNhapSach extends JPanel {
 		panelBtn.add(btnXoa);
 		
 		JButton btnNhapSach = new JButton("Nhập sách");
+		btnNhapSach.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int sodong = tblNhapsach.getModel().getRowCount();
+				
+			}
+		});
 		btnNhapSach.setBounds(10, 89, 110, 28);
 		panelBtn.add(btnNhapSach);
+		
+		JPanel panelLabel = new JPanel();
+		panelLabel.setBounds(10, 58, 371, 40);
+		add(panelLabel);
+		panelLabel.setLayout(null);
+		
+		JLabel lblNgyNhp = new JLabel("Ngày nhập:");
+		lblNgyNhp.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNgyNhp.setBounds(275, 11, 86, 14);
+		panelLabel.add(lblNgyNhp);
+		
+		JPanel panelDate = new JPanel();
+		panelDate.setBounds(391, 62, 213, 36);
+		add(panelDate);
+		panelDate.setLayout(new BorderLayout(0, 0));
+		
+		picker.setTextEditable(false);
+		picker.setShowYearButtons(true);
+		panelDate.add((JComponent) picker);
 	}
 	
 	public static DefaultTableModel setDataForTable(ArrayList<Nhapsach> data) {
@@ -123,5 +171,16 @@ public class PhieuNhapSach extends JPanel {
 //	    }
 	    
 	    return model;
+	}
+	
+	public static DefaultComboBoxModel setDataForCombobox() {
+		String[] data = new String[theloai.size()];
+		for(int i = 0; i < theloai.size(); i++) {
+			data[i] = theloai.get(i).getTenTheLoai();
+		}
+		
+		DefaultComboBoxModel model = new DefaultComboBoxModel(data);
+		
+		return model;
 	}
 }
