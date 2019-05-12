@@ -130,7 +130,6 @@ public class PhieuNhapSach extends JPanel {
 		JButton btnNhapSach = new JButton("Nhập sách");
 		btnNhapSach.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String[] errList = null;
 				//lay ngay tu JDatePicker
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				Calendar c2 = (Calendar) picker.getModel().getValue();
@@ -152,7 +151,64 @@ public class PhieuNhapSach extends JPanel {
 				for(int i = 0; i < sodong; i++) {
 					Nhapsach nhapsach = new Nhapsach();
 					Sach sach = new Sach();
+					
+					//kiem tra sach nhap vao da co trong db chua
+					SachDAO sDAO = new SachDAO();
+					ArrayList<Sach> list = sDAO.timKiemSach(nhapSachModel.getValueAt(i, 1), tacgia, idTheLoai);
 				}
+				
+				Nhapsach nhapsach = new Nhapsach();
+				Sach sach = new Sach();
+				
+				
+				nhapsach.setNgayNhap(sdf.format(c2.getTime()));
+				
+				//lay danh sach sach tu JTable
+				String tensach = tblNhapsach.getModel().getValueAt(0, 1).toString();
+				
+				String tenTheLoai = tblNhapsach.getModel().getValueAt(0, 2).toString();
+				TheLoaiDAO tlDAO = new TheLoaiDAO();
+				int idTheLoai = tlDAO.layId(tenTheLoai);
+				
+				String tacgia = tblNhapsach.getModel().getValueAt(0, 3).toString();
+				
+				//tim sach neu co lay id, neu chua co them vao
+				SachDAO sDAO = new SachDAO();
+				ArrayList<Sach> list = sDAO.timKiemSach(tensach, tacgia, idTheLoai);
+				
+				if(list.size() > 0) {
+					System.out.println("Sach da ton tai");
+					sach = list.get(0);
+					if(list.get(0).getSoLuong() >= 300) {
+						JOptionPane.showMessageDialog(null, "Chi nhap cac dau sach co luong ton < 300");
+					} else {
+						nhapsach.setMaSach(list.get(0).getId());
+						nhapsach.setSoLuongTon(list.get(0).getSoLuong());
+					}
+				} else {
+					System.out.println("Can them sach vao");
+				}
+				
+				//lay so luong nhap va kiem tra (set cung la 150 - sau chuyen lay tu quy dinh)
+				int soluong = Integer.parseInt(tblNhapsach.getModel().getValueAt(0, 4).toString());
+				if(soluong < 150) {
+					JOptionPane.showMessageDialog(null, "So luong nhap it nhat la 150");
+				} else {
+					nhapsach.setSoLuongNhap(soluong);
+				}
+				
+				NhapSachDAO nsDAO = new NhapSachDAO();
+				int rs = nsDAO.nhapSach(nhapsach);
+				
+				if(rs > 0) {
+					JOptionPane.showMessageDialog(null, "Nhap sach thanh cong");
+				} else {
+					JOptionPane.showMessageDialog(null, "Nhap sach that bai");
+				}
+				
+				//cap nhat so luong sach
+				sach.setSoLuong(sach.getSoLuong() + soluong);
+				sDAO.capNhatSoLuongSach(sach);
 			}
 		});
 		btnNhapSach.setBounds(10, 89, 110, 28);

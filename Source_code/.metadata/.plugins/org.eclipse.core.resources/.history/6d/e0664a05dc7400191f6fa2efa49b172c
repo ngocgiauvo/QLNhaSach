@@ -5,7 +5,6 @@ import javax.swing.JScrollPane;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -95,6 +94,7 @@ public class PhieuNhapSach extends JPanel {
 				
 				Object rowData[] = new Object[1];
 				rowData[0] = curModel.getRowCount() + 1;
+				curModel.isCellEditable(0, 0);
 				curModel.addRow(rowData);
 				
 				tblNhapsach.setModel(curModel);
@@ -130,29 +130,66 @@ public class PhieuNhapSach extends JPanel {
 		JButton btnNhapSach = new JButton("Nhập sách");
 		btnNhapSach.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String[] errList = null;
+				DefaultTableModel nhapSachModel = (DefaultTableModel) tblNhapsach.getModel();
+				
+				Nhapsach nhapsach = new Nhapsach();
+				Sach sach = new Sach();
+				
+				int sodong = tblNhapsach.getModel().getRowCount();
+				
 				//lay ngay tu JDatePicker
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				Calendar c2 = (Calendar) picker.getModel().getValue();
+				System.out.println("JDatePicker: " + (c2 != null ? sdf.format(c2.getTime()) : null));
 				
-				String ngaynhap = "";
-				if(c2 != null) {
-					ngaynhap = sdf.format(c2.getTime());
+				nhapsach.setNgayNhap(sdf.format(c2.getTime()));
+				
+				//lay danh sach sach tu JTable
+				String tensach = tblNhapsach.getModel().getValueAt(0, 1).toString();
+				
+				String tenTheLoai = tblNhapsach.getModel().getValueAt(0, 2).toString();
+				TheLoaiDAO tlDAO = new TheLoaiDAO();
+				int idTheLoai = tlDAO.layId(tenTheLoai);
+				
+				String tacgia = tblNhapsach.getModel().getValueAt(0, 3).toString();
+				
+				//tim sach neu co lay id, neu chua co them vao
+				SachDAO sDAO = new SachDAO();
+				ArrayList<Sach> list = sDAO.timKiemSach(tensach, tacgia, idTheLoai);
+				
+				if(list.size() > 0) {
+					System.out.println("Sach da ton tai");
+					sach = list.get(0);
+					if(list.get(0).getSoLuong() >= 300) {
+						JOptionPane.showMessageDialog(null, "Chi nhap cac dau sach co luong ton < 300");
+					} else {
+						nhapsach.setMaSach(list.get(0).getId());
+						nhapsach.setSoLuongTon(list.get(0).getSoLuong());
+					}
 				} else {
-					//lay ngay hien tai
-					Date date = new Date();
-					ngaynhap = sdf.format(date);
+					System.out.println("Can them sach vao");
 				}
 				
-				
-				DefaultTableModel nhapSachModel = (DefaultTableModel) tblNhapsach.getModel();
-				int sodong = nhapSachModel.getRowCount();
-				
-				//duyet qua tat ca cac dong trong table
-				for(int i = 0; i < sodong; i++) {
-					Nhapsach nhapsach = new Nhapsach();
-					Sach sach = new Sach();
+				//lay so luong nhap va kiem tra (set cung la 150 - sau chuyen lay tu quy dinh)
+				int soluong = Integer.parseInt(tblNhapsach.getModel().getValueAt(0, 4).toString());
+				if(soluong < 150) {
+					JOptionPane.showMessageDialog(null, "So luong nhap it nhat la 150");
+				} else {
+					nhapsach.setSoLuongNhap(soluong);
 				}
+				
+				NhapSachDAO nsDAO = new NhapSachDAO();
+				int rs = nsDAO.nhapSach(nhapsach);
+				
+				if(rs > 0) {
+					JOptionPane.showMessageDialog(null, "Nhap sach thanh cong");
+				} else {
+					JOptionPane.showMessageDialog(null, "Nhap sach that bai");
+				}
+				
+				//cap nhat so luong sach
+				sach.setSoLuong(sach.getSoLuong() + soluong);
+				sDAO.capNhatSoLuongSach(sach);
 			}
 		});
 		btnNhapSach.setBounds(10, 89, 110, 28);
@@ -185,8 +222,8 @@ public class PhieuNhapSach extends JPanel {
 	    	@Override
 	        public boolean isCellEditable(int row, int column)
 	        {
-	            // make read only fields except column 1, 2, 3, 4
-	            return column == 1 || column == 2 || column == 3 || column == 4;
+	            // make read only fields except column 0,13,14
+	            return column == 0;
 	        }
 	    };
 	    
