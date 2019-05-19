@@ -91,22 +91,24 @@ public class PhieuNhapSach extends JPanel {
 		JButton btnThem = new JButton("Thêm");
 		btnThem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DefaultTableModel curModel = (DefaultTableModel) tblNhapsach.getModel();
-				
-				Object rowData[] = new Object[1];
-				rowData[0] = curModel.getRowCount() + 1;
-				curModel.addRow(rowData);
-				
-				tblNhapsach.setModel(curModel);
-				
-				TableColumn theLoaiColumn = tblNhapsach.getColumnModel().getColumn(2);
-				JComboBox cbTheLoai = new JComboBox();
-				
-				DefaultComboBoxModel cbModel = setDataForCombobox();
-				cbTheLoai.setModel(cbModel);
-				cbTheLoai.setSelectedItem(null);
-				
-				theLoaiColumn.setCellEditor(new DefaultCellEditor(cbTheLoai));
+				ThemNhapSach themNS = new ThemNhapSach();
+				themNS.setVisible(true);
+//				DefaultTableModel curModel = (DefaultTableModel) tblNhapsach.getModel();
+//				
+//				Object rowData[] = new Object[1];
+//				rowData[0] = curModel.getRowCount() + 1;
+//				curModel.addRow(rowData);
+//				
+//				tblNhapsach.setModel(curModel);
+//				
+//				TableColumn theLoaiColumn = tblNhapsach.getColumnModel().getColumn(2);
+//				JComboBox cbTheLoai = new JComboBox();
+//				
+//				DefaultComboBoxModel cbModel = setDataForCombobox();
+//				cbTheLoai.setModel(cbModel);
+//				cbTheLoai.setSelectedItem(null);
+//				
+//				theLoaiColumn.setCellEditor(new DefaultCellEditor(cbTheLoai));
 			}
 		});
 		btnThem.setBounds(10, 11, 110, 28);
