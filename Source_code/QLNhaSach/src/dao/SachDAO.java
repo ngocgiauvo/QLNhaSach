@@ -66,4 +66,22 @@ public class SachDAO {
 		}
 		return null;
 	}
+	
+	public void capNhatSoLuong(int id, int soluong) {
+		Session session = sessionFactory.openSession();
+		
+		try {
+			session.beginTransaction();
+			String hqlUpdate = "UPDATE Sach S SET S.soLuong = :soluong WHERE S.id = :id";
+			session.createQuery(hqlUpdate).setInteger("soluong", soluong)
+			   .setInteger("id", id).executeUpdate();
+			   session.getTransaction().commit();
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			e.printStackTrace();
+		} finally {
+			session.flush();
+			session.close();
+		}
+	}
 }

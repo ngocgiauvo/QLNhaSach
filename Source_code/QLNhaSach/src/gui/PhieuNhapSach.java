@@ -98,8 +98,9 @@ public class PhieuNhapSach extends JPanel {
 				themNS.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-						JOptionPane.showMessageDialog(null, "thanh cong roi");
 						System.out.println("abc");
+						
+						//Xử lý hiển thị trên table
 					}
 				});
 				

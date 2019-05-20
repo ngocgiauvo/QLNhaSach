@@ -11,6 +11,7 @@ import javax.swing.text.NumberFormatter;
 
 import dao.NhapSachDAO;
 import dao.SachDAO;
+import entities.Nhapsach;
 import entities.Sach;
 
 import javax.swing.JLabel;
@@ -58,8 +59,8 @@ public class ThemNhapSach extends JFrame {
 	 */
 	public ThemNhapSach() {
 		setResizable(false);
-		setTitle("Th\u00EAm s\u00E1ch");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("Thêm sách");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 421, 270);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -71,7 +72,7 @@ public class ThemNhapSach extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblThmSch = new JLabel("TH\u00CAM S\u00C1CH");
+		JLabel lblThmSch = new JLabel("THÊM SÁCH");
 		lblThmSch.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblThmSch.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblThmSch);
@@ -81,7 +82,7 @@ public class ThemNhapSach extends JFrame {
 		contentPane.add(mainPanel);
 		mainPanel.setLayout(null);
 		
-		JLabel lblChnSch = new JLabel("Ch\u1ECDn s\u00E1ch:");
+		JLabel lblChnSch = new JLabel("Chọn sách:");
 		lblChnSch.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblChnSch.setBounds(10, 22, 81, 22);
 		mainPanel.add(lblChnSch);
@@ -96,7 +97,7 @@ public class ThemNhapSach extends JFrame {
 		cbChonSach.setRenderer(new BookListCellRenderer());
 		mainPanel.add(cbChonSach);
 		
-		JLabel lblSLng = new JLabel("S\u1ED1 l\u01B0\u1EE3ng:");
+		JLabel lblSLng = new JLabel("Số lượng:");
 		lblSLng.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblSLng.setBounds(10, 71, 81, 22);
 		mainPanel.add(lblSLng);
@@ -126,7 +127,19 @@ public class ThemNhapSach extends JFrame {
 				String ngaynhap = sdf.format(date);
 				
 				//luu vao bang nhap sach
+				Nhapsach ns = new Nhapsach();
+				ns.setNgayNhap(ngaynhap);
+				ns.setMaSach(id);
+				ns.setSoLuongNhap(soluong);
+				ns.setSoLuongTon(s.getSoLuong());
+				
 				NhapSachDAO nsDAO = new NhapSachDAO();
+				nsDAO.nhapSach(ns);
+				
+				//cap nhat lai so luong ton
+				SachDAO sDAO = new SachDAO();
+				int soLuongTonMoi = s.getSoLuong() + soluong;
+				sDAO.capNhatSoLuong(id, soLuongTonMoi);
 			}
 		});
 		btnThem.setBounds(101, 115, 97, 34);
