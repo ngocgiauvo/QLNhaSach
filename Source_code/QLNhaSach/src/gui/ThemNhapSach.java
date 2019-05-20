@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
 
+import dao.NhapSachDAO;
 import dao.SachDAO;
 import entities.Sach;
 
@@ -17,6 +18,7 @@ import javax.swing.JList;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -26,6 +28,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 
 public class ThemNhapSach extends JFrame {
@@ -115,15 +119,24 @@ public class ThemNhapSach extends JFrame {
 				int soluong = (Integer) spinnerSoLuong.getValue();
 				
 				System.out.println("Id: " + id + " so luong: " + soluong);
+				
+				//lay ngay hien tai
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+				Date date = new Date();
+				String ngaynhap = sdf.format(date);
+				
+				//luu vao bang nhap sach
+				NhapSachDAO nsDAO = new NhapSachDAO();
 			}
 		});
 		btnThem.setBounds(101, 115, 97, 34);
 		mainPanel.add(btnThem);
 		
-		JButton btnHuy = new JButton("Hủy");
+		JButton btnHuy = new JButton("Xóa");
 		btnHuy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				cbChonSach.setSelectedIndex(0);
+				spinnerSoLuong.setValue(150);
 			}
 		});
 		btnHuy.setBounds(253, 115, 97, 34);

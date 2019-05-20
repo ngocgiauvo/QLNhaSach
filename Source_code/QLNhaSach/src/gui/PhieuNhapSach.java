@@ -31,6 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import java.awt.Dimension;
@@ -93,6 +94,16 @@ public class PhieuNhapSach extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				ThemNhapSach themNS = new ThemNhapSach();
 				themNS.setVisible(true);
+				
+				themNS.addWindowListener(new java.awt.event.WindowAdapter() {
+					@Override
+				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+						JOptionPane.showMessageDialog(null, "thanh cong roi");
+						System.out.println("abc");
+					}
+				});
+				
+				
 //				DefaultTableModel curModel = (DefaultTableModel) tblNhapsach.getModel();
 //				
 //				Object rowData[] = new Object[1];
