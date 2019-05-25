@@ -1,7 +1,9 @@
 package dao;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -30,5 +32,30 @@ public class TheLoaiDAO {
 			session.close();
 		}
 		return list;
+	}
+	
+	public String layTenTheLoai(int id) {
+		Session session = sessionFactory.openSession();
+		String name = "";
+		
+		try {
+			String hql = "FROM Theloai WHERE id = :id";
+			Query query = session.createQuery(hql);
+			query.setInteger("id", id);
+			
+			List<Theloai> temp = (List<Theloai>) query.list();
+			
+			if(temp.size() > 0) {
+				name = temp.get(0).getTenTheLoai();
+			}
+		} catch (RuntimeException e) {
+			session.getTransaction().rollback();
+			e.printStackTrace();
+		} finally {
+			session.flush();
+			session.close();
+		}
+		
+		return name;
 	}
 }

@@ -10,12 +10,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.NumberFormatter;
 
 import dao.NhapSachDAO;
+import dao.QuyDinhDAO;
 import dao.SachDAO;
+import dao.TheLoaiDAO;
 import entities.Nhapsach;
+import entities.Quydinh;
 import entities.Sach;
+import entities.Theloai;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -37,6 +42,9 @@ public class ThemNhapSach extends JFrame {
 
 	private JPanel contentPane;
 	public ArrayList<Sach> dsSach;
+	public ArrayList<Quydinh> dsQuyDinh;
+	public ArrayList<Object[]> dsNhapTemp = new ArrayList<Object[]>();
+	int nhapToiThieu = 0, tonToiThieuNhap = 0;
 
 	/**
 	 * Launch the application.
@@ -45,7 +53,7 @@ public class ThemNhapSach extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ThemNhapSach frame = new ThemNhapSach();
+					ThemNhapSach frame = new ThemNhapSach(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -57,7 +65,22 @@ public class ThemNhapSach extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ThemNhapSach() {
+	public ThemNhapSach(String ngaynhap) {
+		QuyDinhDAO qdDAO = new QuyDinhDAO();
+		dsQuyDinh = qdDAO.layDSQuyDinh();
+		
+		for(int i = 0; i < dsQuyDinh.size(); i++) {
+			if(dsQuyDinh.get(i).getTenQuyDinh().equals("nhap_toi_thieu")) {
+				nhapToiThieu = dsQuyDinh.get(i).getNoiDung();
+				System.out.println("nhap toi thieu la: " + nhapToiThieu);
+			}
+			
+			if(dsQuyDinh.get(i).getTenQuyDinh().equals("ton_toi_thieu_nhap")) {
+				tonToiThieuNhap = dsQuyDinh.get(i).getNoiDung();
+				System.out.println("ton toi thieu nhap la: " + tonToiThieuNhap);
+			}
+		}
+		
 		setResizable(false);
 		setTitle("Thêm sách");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -104,7 +127,7 @@ public class ThemNhapSach extends JFrame {
 		
 		JSpinner spinnerSoLuong = new JSpinner();
 		spinnerSoLuong.setBounds(101, 70, 97, 25);
-		spinnerSoLuong.setModel(new SpinnerNumberModel(1,1,300,1));
+		spinnerSoLuong.setModel(new SpinnerNumberModel(1, 1, 1000, 1));
 		spinnerSoLuong.setEditor(new JSpinner.NumberEditor(spinnerSoLuong,"##.#"));
 		JFormattedTextField txt = ((JSpinner.NumberEditor) spinnerSoLuong.getEditor()).getTextField();
 		((NumberFormatter) txt.getFormatter()).setAllowsInvalid(false);
@@ -113,33 +136,25 @@ public class ThemNhapSach extends JFrame {
 		JButton btnThem = new JButton("Thêm");
 		btnThem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				TheLoaiDAO tlDAO = new TheLoaiDAO();
 				//lay id sach va so luong
 				Sach s = (Sach) cbChonSach.getSelectedItem();
-				int id = s.getId();
-				
 				int soluong = (Integer) spinnerSoLuong.getValue();
 				
-				System.out.println("Id: " + id + " so luong: " + soluong);
-				
-				//lay ngay hien tai
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-				Date date = new Date();
-				String ngaynhap = sdf.format(date);
-				
-				//luu vao bang nhap sach
-				Nhapsach ns = new Nhapsach();
-				ns.setNgayNhap(ngaynhap);
-				ns.setMaSach(id);
-				ns.setSoLuongNhap(soluong);
-				ns.setSoLuongTon(s.getSoLuong());
-				
-				NhapSachDAO nsDAO = new NhapSachDAO();
-				nsDAO.nhapSach(ns);
-				
-				//cap nhat lai so luong ton
-				SachDAO sDAO = new SachDAO();
-				int soLuongTonMoi = s.getSoLuong() + soluong;
-				sDAO.capNhatSoLuong(id, soLuongTonMoi);
+				if(soluong < nhapToiThieu || s.getSoLuong() >= tonToiThieuNhap) {
+					JOptionPane.showMessageDialog(null, "Số lượng nhập ít nhất là 150. Chỉ nhập các đầu sách có lượng tồn ít hơn 300.");
+				} else {
+					//luu ds tam
+					Object[] temp = new Object[7];
+					temp[0] = ngaynhap;
+					temp[1] = s.getId();;
+					temp[2] = s.getTenSach();
+					temp[3] = tlDAO.layTenTheLoai(s.getTheLoai());
+					temp[4] = s.getTacGia();
+					temp[5] = soluong; //so luong nhap
+					temp[6] = s.getSoLuong(); //so luong ton
+					dsNhapTemp.add(temp);
+				}
 			}
 		});
 		btnThem.setBounds(101, 115, 97, 34);

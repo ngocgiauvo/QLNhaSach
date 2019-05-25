@@ -1,10 +1,8 @@
 package entities;
-// Generated May 2, 2019 2:17:24 PM by Hibernate Tools 3.5.0.Final
+// Generated May 25, 2019 5:07:21 PM by Hibernate Tools 3.5.0.Final
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -15,71 +13,52 @@ import javax.persistence.Table;
 @Table(name = "quydinh", catalog = "qlnhasach")
 public class Quydinh implements java.io.Serializable {
 
-	private Integer id;
-	private Integer nhaptoithieu;
-	private Integer tonToiThieuNhap;
-	private Integer tonToiThieuBan;
-	private Long tienNoToiDa;
+	private int id;
+	private String tenQuyDinh;
+	private Integer noiDung;
 	private Integer hieuLuc;
 
 	public Quydinh() {
 	}
 
-	public Quydinh(Integer nhaptoithieu, Integer tonToiThieuNhap, Integer tonToiThieuBan, Long tienNoToiDa,
-			Integer hieuLuc) {
-		this.nhaptoithieu = nhaptoithieu;
-		this.tonToiThieuNhap = tonToiThieuNhap;
-		this.tonToiThieuBan = tonToiThieuBan;
-		this.tienNoToiDa = tienNoToiDa;
+	public Quydinh(int id) {
+		this.id = id;
+	}
+
+	public Quydinh(int id, String tenQuyDinh, Integer noiDung, Integer hieuLuc) {
+		this.id = id;
+		this.tenQuyDinh = tenQuyDinh;
+		this.noiDung = noiDung;
 		this.hieuLuc = hieuLuc;
 	}
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "id", unique = true, nullable = false)
-	public Integer getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	@Column(name = "nhaptoithieu")
-	public Integer getNhaptoithieu() {
-		return this.nhaptoithieu;
+	@Column(name = "tenQuyDinh", length = 100)
+	public String getTenQuyDinh() {
+		return this.tenQuyDinh;
 	}
 
-	public void setNhaptoithieu(Integer nhaptoithieu) {
-		this.nhaptoithieu = nhaptoithieu;
+	public void setTenQuyDinh(String tenQuyDinh) {
+		this.tenQuyDinh = tenQuyDinh;
 	}
 
-	@Column(name = "tonToiThieuNhap")
-	public Integer getTonToiThieuNhap() {
-		return this.tonToiThieuNhap;
+	@Column(name = "noiDung")
+	public Integer getNoiDung() {
+		return this.noiDung;
 	}
 
-	public void setTonToiThieuNhap(Integer tonToiThieuNhap) {
-		this.tonToiThieuNhap = tonToiThieuNhap;
-	}
-
-	@Column(name = "tonToiThieuBan")
-	public Integer getTonToiThieuBan() {
-		return this.tonToiThieuBan;
-	}
-
-	public void setTonToiThieuBan(Integer tonToiThieuBan) {
-		this.tonToiThieuBan = tonToiThieuBan;
-	}
-
-	@Column(name = "tienNoToiDa", precision = 11, scale = 0)
-	public Long getTienNoToiDa() {
-		return this.tienNoToiDa;
-	}
-
-	public void setTienNoToiDa(Long tienNoToiDa) {
-		this.tienNoToiDa = tienNoToiDa;
+	public void setNoiDung(Integer noiDung) {
+		this.noiDung = noiDung;
 	}
 
 	@Column(name = "hieuLuc")

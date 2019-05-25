@@ -6,6 +6,7 @@ import javax.swing.JScrollPane;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -19,6 +20,7 @@ import org.jdatepicker.DatePicker;
 import org.jdatepicker.JDatePicker;
 
 import dao.NhapSachDAO;
+import dao.QuyDinhDAO;
 import dao.SachDAO;
 import dao.TheLoaiDAO;
 import entities.*;
@@ -45,7 +47,6 @@ import java.awt.CardLayout;
 
 public class PhieuNhapSach extends JPanel {
 	private JTable tblNhapsach;
-	private static ArrayList<Theloai> theloai;
 	private static DatePicker picker = new JDatePicker();
 
 	/**
@@ -53,8 +54,6 @@ public class PhieuNhapSach extends JPanel {
 	 */
 	public PhieuNhapSach() {
 		setLayout(null);
-		TheLoaiDAO tlDAO = new TheLoaiDAO();
-		theloai = tlDAO.layTheLoai();
 		
 		JPanel panelHead = new JPanel();
 		panelHead.setBounds(10, 11, 865, 40);
@@ -77,12 +76,23 @@ public class PhieuNhapSach extends JPanel {
 		
 		DefaultTableModel model = setDataForTable(null);
 		tblNhapsach.setModel(model);
-		
 		tblNhapsach.getColumnModel().getColumn(0).setMaxWidth(30);
 		tblNhapsach.getColumnModel().getColumn(1).setMaxWidth(320);
 		tblNhapsach.getColumnModel().getColumn(2).setMaxWidth(150);
 		tblNhapsach.getColumnModel().getColumn(3).setMaxWidth(150);
 		tblNhapsach.getColumnModel().getColumn(4).setMaxWidth(75);
+		
+		tblNhapsach.getColumnModel().getColumn(5).setMinWidth(0);
+		tblNhapsach.getColumnModel().getColumn(5).setMaxWidth(0);
+		tblNhapsach.getColumnModel().getColumn(5).setWidth(0);
+		
+		tblNhapsach.getColumnModel().getColumn(6).setMinWidth(0);
+		tblNhapsach.getColumnModel().getColumn(6).setMaxWidth(0);
+		tblNhapsach.getColumnModel().getColumn(6).setWidth(0);
+		
+		tblNhapsach.getColumnModel().getColumn(7).setMinWidth(0);
+		tblNhapsach.getColumnModel().getColumn(7).setMaxWidth(0);
+		tblNhapsach.getColumnModel().getColumn(7).setWidth(0);
 		
 		JPanel panelBtn = new JPanel();
 		panelBtn.setBounds(755, 109, 130, 255);
@@ -92,35 +102,45 @@ public class PhieuNhapSach extends JPanel {
 		JButton btnThem = new JButton("Thêm");
 		btnThem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ThemNhapSach themNS = new ThemNhapSach();
+				//lay ngay tu datepicker
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+				Calendar c2 = (Calendar) picker.getModel().getValue();
+				
+				String ngaynhap = "";
+				
+				if(c2 != null) {
+					ngaynhap = sdf.format(c2.getTime());
+				} else {
+					//lay ngay hien tai
+					Date date = new Date();
+					ngaynhap = sdf.format(date);
+				}
+				
+				final String ddd = ngaynhap;
+				
+				ThemNhapSach themNS = new ThemNhapSach(ngaynhap);
 				themNS.setVisible(true);
 				
 				themNS.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 				    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-						System.out.println("abc");
+						ArrayList<Object[]> dsNhap = themNS.dsNhapTemp;
 						
-						//Xử lý hiển thị trên table
+						DefaultTableModel curModel = (DefaultTableModel) tblNhapsach.getModel();
+						for(int i = 0; i < dsNhap.size(); i++) {
+							Object rowData[] = new Object[8];
+							rowData[0] = curModel.getRowCount() + 1;
+							rowData[1] = dsNhap.get(i)[2]; //ten sach
+							rowData[2] = dsNhap.get(i)[3]; //the loai
+							rowData[3] = dsNhap.get(i)[4]; //tac gia
+							rowData[4] = dsNhap.get(i)[5]; //so luong nhap
+							rowData[5] = dsNhap.get(i)[1]; //ID sach
+							rowData[6] = dsNhap.get(i)[0]; //ngay nhap
+							rowData[7] = dsNhap.get(i)[6]; //so luong ton
+							curModel.addRow(rowData);
+						}
 					}
 				});
-				
-				
-//				DefaultTableModel curModel = (DefaultTableModel) tblNhapsach.getModel();
-//				
-//				Object rowData[] = new Object[1];
-//				rowData[0] = curModel.getRowCount() + 1;
-//				curModel.addRow(rowData);
-//				
-//				tblNhapsach.setModel(curModel);
-//				
-//				TableColumn theLoaiColumn = tblNhapsach.getColumnModel().getColumn(2);
-//				JComboBox cbTheLoai = new JComboBox();
-//				
-//				DefaultComboBoxModel cbModel = setDataForCombobox();
-//				cbTheLoai.setModel(cbModel);
-//				cbTheLoai.setSelectedItem(null);
-//				
-//				theLoaiColumn.setCellEditor(new DefaultCellEditor(cbTheLoai));
 			}
 		});
 		btnThem.setBounds(10, 11, 110, 28);
@@ -144,29 +164,31 @@ public class PhieuNhapSach extends JPanel {
 		JButton btnNhapSach = new JButton("Nhập sách");
 		btnNhapSach.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String[] errList = null;
-				//lay ngay tu JDatePicker
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-				Calendar c2 = (Calendar) picker.getModel().getValue();
+				DefaultTableModel curModel = (DefaultTableModel) tblNhapsach.getModel();
+				SachDAO sDAO = new SachDAO();
 				
-				String ngaynhap = "";
-				if(c2 != null) {
-					ngaynhap = sdf.format(c2.getTime());
-				} else {
-					//lay ngay hien tai
-					Date date = new Date();
-					ngaynhap = sdf.format(date);
+				ArrayList<Nhapsach> nsList = new ArrayList<Nhapsach>();
+				
+				//luu thong tin vao bang nhap sach
+				for(int i = 0; i < curModel.getRowCount(); i++) {
+					int soluongnhap = (Integer) curModel.getValueAt(i, 4);
+					int soluongton = (Integer) curModel.getValueAt(i, 7);
+					int idsach = (Integer) curModel.getValueAt(i, 5);
+					
+					Nhapsach ns = new Nhapsach();
+					ns.setNgayNhap(curModel.getValueAt(i, 6).toString());
+					ns.setMaSach(idsach);
+					ns.setSoLuongNhap(soluongnhap);
+					ns.setSoLuongTon(soluongton);
+					nsList.add(ns);
+					
+					sDAO.capNhatSoLuong(idsach, soluongton + soluongnhap);
 				}
 				
+				NhapSachDAO nsDAO = new NhapSachDAO();
+				nsDAO.nhapSach(nsList);
 				
-				DefaultTableModel nhapSachModel = (DefaultTableModel) tblNhapsach.getModel();
-				int sodong = nhapSachModel.getRowCount();
-				
-				//duyet qua tat ca cac dong trong table
-				for(int i = 0; i < sodong; i++) {
-					Nhapsach nhapsach = new Nhapsach();
-					Sach sach = new Sach();
-				}
+				curModel.setRowCount(0);
 			}
 		});
 		btnNhapSach.setBounds(10, 89, 110, 28);
@@ -193,43 +215,17 @@ public class PhieuNhapSach extends JPanel {
 	}
 	
 	public static DefaultTableModel setDataForTable(ArrayList<Nhapsach> data) {
-		String[] columnName = {"STT", "Sách", "Thể loại", "Tác giả", "Số lượng"};
+		String[] columnName = {"STT", "Sách", "Thể loại", "Tác giả", "Số lượng", "Ngày nhập", "ID Sách", "Tồn"};
 
 	    DefaultTableModel model = new DefaultTableModel(columnName, 0) {
 	    	@Override
 	        public boolean isCellEditable(int row, int column)
 	        {
 	            // make read only fields except column 1, 2, 3, 4
-	            return column == 1 || column == 2 || column == 3 || column == 4;
+	            return false;
 	        }
 	    };
 	    
-	    if(data == null) {
-//	    	Object rowData[] = new Object[1];
-//		    model.addRow(rowData);
-	    }
-	    
-//	    for(int i = 0; i < data.size(); i++) {
-//	    	Object rowData[] = new Object[5];
-//	    	rowData[0] = data.get(i).getMssv();
-//            rowData[1] = data.get(i).getHoten();
-//            rowData[2] = data.get(i).getNamsinh();
-//            rowData[3] = data.get(i).getGioitinh();
-//            rowData[4] = data.get(i).getDiachi();
-//            model.addRow(rowData);
-//	    }
-	    
 	    return model;
-	}
-	
-	public static DefaultComboBoxModel setDataForCombobox() {
-		String[] data = new String[theloai.size()];
-		for(int i = 0; i < theloai.size(); i++) {
-			data[i] = theloai.get(i).getTenTheLoai();
-		}
-		
-		DefaultComboBoxModel model = new DefaultComboBoxModel(data);
-		
-		return model;
 	}
 }
