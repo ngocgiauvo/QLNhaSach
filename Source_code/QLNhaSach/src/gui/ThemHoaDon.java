@@ -3,48 +3,40 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.text.NumberFormatter;
-
-import dao.NhapSachDAO;
-import dao.QuyDinhDAO;
-import dao.SachDAO;
-import dao.TheLoaiDAO;
-import entities.Nhapsach;
-import entities.Quydinh;
-import entities.Sach;
-import entities.Theloai;
-
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import java.util.ArrayList;
-import java.util.Date;
-
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
-import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.NumberFormatter;
 
-public class ThemNhapSach extends JFrame {
+import dao.QuyDinhDAO;
+import dao.SachDAO;
+import dao.TheLoaiDAO;
+import entities.Quydinh;
+import entities.Sach;
+import gui.ThemNhapSach.BookListCellRenderer;
+
+public class ThemHoaDon extends JFrame {
 
 	private JPanel contentPane;
 	public ArrayList<Sach> dsSach;
 	public ArrayList<Quydinh> dsQuyDinh;
-	public ArrayList<Object[]> dsNhapTemp = new ArrayList<Object[]>();
-	int nhapToiThieu = 0, tonToiThieuNhap = 0;
+	public ArrayList<Object[]> dsBanTemp = new ArrayList<Object[]>();
+	int tonToiThieuBan = 0;
 
 	/**
 	 * Launch the application.
@@ -53,7 +45,7 @@ public class ThemNhapSach extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ThemNhapSach frame = new ThemNhapSach(null);
+					ThemHoaDon frame = new ThemHoaDon();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -65,24 +57,18 @@ public class ThemNhapSach extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ThemNhapSach(String ngaynhap) {
+	public ThemHoaDon() {
 		QuyDinhDAO qdDAO = new QuyDinhDAO();
 		dsQuyDinh = qdDAO.layDSQuyDinh();
 		
 		for(int i = 0; i < dsQuyDinh.size(); i++) {
-			if(dsQuyDinh.get(i).getTenQuyDinh().equals("nhap_toi_thieu")) {
-				nhapToiThieu = dsQuyDinh.get(i).getNoiDung();
-				System.out.println("nhap toi thieu la: " + nhapToiThieu);
-			}
-			
-			if(dsQuyDinh.get(i).getTenQuyDinh().equals("ton_toi_thieu_nhap")) {
-				tonToiThieuNhap = dsQuyDinh.get(i).getNoiDung();
-				System.out.println("ton toi thieu nhap la: " + tonToiThieuNhap);
+			if(dsQuyDinh.get(i).getTenQuyDinh().equals("ton_toi_thieu_ban")) {
+				tonToiThieuBan = dsQuyDinh.get(i).getNoiDung();
 			}
 		}
 		
 		setResizable(false);
-		setTitle("Thêm sách");
+		setTitle("Chọn sách");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 421, 270);
 		contentPane = new JPanel();
@@ -95,10 +81,10 @@ public class ThemNhapSach extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblThmSch = new JLabel("THÊM SÁCH");
-		lblThmSch.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblThmSch.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(lblThmSch);
+		JLabel lblChonSach = new JLabel("CHỌN SÁCH");
+		lblChonSach.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblChonSach.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblChonSach);
 		
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBounds(10, 62, 395, 166);
@@ -141,19 +127,18 @@ public class ThemNhapSach extends JFrame {
 				Sach s = (Sach) cbChonSach.getSelectedItem();
 				int soluong = (Integer) spinnerSoLuong.getValue();
 				
-				if(soluong < nhapToiThieu || s.getSoLuong() >= tonToiThieuNhap) {
-					JOptionPane.showMessageDialog(null, "Số lượng nhập ít nhất là 150. Chỉ nhập các đầu sách có lượng tồn ít hơn 300.");
+				if(s.getSoLuong() - soluong < tonToiThieuBan) {
+					JOptionPane.showMessageDialog(null, "Chỉ bán các đầu sách có lượng tồn sau khi bán ít nhất là " + tonToiThieuBan);
 				} else {
 					//luu ds tam
-					Object[] temp = new Object[7];
-					temp[0] = ngaynhap;
-					temp[1] = s.getId();
-					temp[2] = s.getTenSach();
-					temp[3] = tlDAO.layTenTheLoai(s.getTheLoai());
-					temp[4] = s.getTacGia();
-					temp[5] = soluong; //so luong nhap
-					temp[6] = s.getSoLuong(); //so luong ton
-					dsNhapTemp.add(temp);
+					Object[] temp = new Object[6];
+					temp[0] = s.getId();
+					temp[1] = s.getTenSach();
+					temp[2] = tlDAO.layTenTheLoai(s.getTheLoai());
+					temp[3] = soluong; //so luong mua
+					temp[4] = s.getDonGia();
+					temp[5] = s.getSoLuong(); //so luong ton
+					dsBanTemp.add(temp);
 				}
 			}
 		});
@@ -172,7 +157,6 @@ public class ThemNhapSach extends JFrame {
 	}
 	
 	public class BookListCellRenderer extends DefaultListCellRenderer {
-
 	    @Override
 	    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
@@ -181,8 +165,6 @@ public class ThemNhapSach extends JFrame {
 	        }
 
 	        return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
 	    }
-
 	}
 }

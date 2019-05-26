@@ -3,54 +3,43 @@ package gui;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import org.jdatepicker.DatePicker;
+import org.jdatepicker.JDatePicker;
+
+import dao.HoaDonDAO;
+import dao.SachDAO;
 import entities.*;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 
 public class HoaDon extends JPanel {
-	private JTextField txtTenKhachHang;
 	private JTable tblHoaDon;
+	private JTextField txtTenKH;
+	private static DatePicker picker = new JDatePicker();
+	Khachhang kh = new Khachhang();
 
 	/**
 	 * Create the panel.
 	 */
 	public HoaDon() {
 		setLayout(null);
-		
-		JPanel panelHead = new JPanel();
-		panelHead.setBounds(10, 11, 865, 87);
-		add(panelHead);
-		panelHead.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("H\u1ECD t\u00EAn kh\u00E1ch h\u00E0ng:");
-		lblNewLabel.setBounds(124, 62, 119, 14);
-		panelHead.add(lblNewLabel);
-		
-		txtTenKhachHang = new JTextField();
-		txtTenKhachHang.setBounds(253, 59, 216, 20);
-		panelHead.add(txtTenKhachHang);
-		txtTenKhachHang.setColumns(10);
-		
-		JLabel lblNgyLpHa = new JLabel("Ng\u00E0y l\u1EADp h\u00F3a \u0111\u01A1n:");
-		lblNgyLpHa.setBounds(479, 62, 119, 14);
-		panelHead.add(lblNgyLpHa);
-		
-		JLabel lblHanBn = new JLabel("HÓA ĐƠN BÁN SÁCH");
-		lblHanBn.setHorizontalAlignment(SwingConstants.CENTER);
-		lblHanBn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblHanBn.setBounds(87, 11, 673, 40);
-		panelHead.add(lblHanBn);
 		
 		JPanel panelMain = new JPanel();
 		panelMain.setBounds(10, 109, 725, 420);
@@ -68,6 +57,14 @@ public class HoaDon extends JPanel {
 		tblHoaDon.getColumnModel().getColumn(3).setMaxWidth(85);
 		tblHoaDon.getColumnModel().getColumn(4).setMaxWidth(150);
 		
+		tblHoaDon.getColumnModel().getColumn(5).setMinWidth(0);
+		tblHoaDon.getColumnModel().getColumn(5).setMaxWidth(0);
+		tblHoaDon.getColumnModel().getColumn(5).setWidth(0);
+		
+		tblHoaDon.getColumnModel().getColumn(6).setMinWidth(0);
+		tblHoaDon.getColumnModel().getColumn(6).setMaxWidth(0);
+		tblHoaDon.getColumnModel().getColumn(6).setWidth(0);
+		
 		JPanel panelBtn = new JPanel();
 		panelBtn.setBounds(745, 109, 130, 420);
 		add(panelBtn);
@@ -76,12 +73,28 @@ public class HoaDon extends JPanel {
 		JButton btnThem = new JButton("Thêm");
 		btnThem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				DefaultTableModel curModel = (DefaultTableModel) tblHoaDon.getModel();
+				ThemHoaDon themHD = new ThemHoaDon();
+				themHD.setVisible(true);
 				
-				Object rowData[] = new Object[1];
-				curModel.addRow(rowData);
-				
-				tblHoaDon.setModel(curModel);
+				themHD.addWindowListener(new java.awt.event.WindowAdapter() {
+				    @Override
+				    public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+				    	ArrayList<Object[]> dsNhap = themHD.dsBanTemp;
+						
+						DefaultTableModel curModel = (DefaultTableModel) tblHoaDon.getModel();
+						for(int i = 0; i < dsNhap.size(); i++) {
+							Object rowData[] = new Object[7];
+							rowData[0] = curModel.getRowCount() + 1;
+							rowData[1] = dsNhap.get(i)[1]; //ten sach
+							rowData[2] = dsNhap.get(i)[2]; //the loai
+							rowData[3] = dsNhap.get(i)[3]; //so luong mua
+							rowData[4] = dsNhap.get(i)[4]; //don gia
+							rowData[5] = dsNhap.get(i)[0]; //ID sach
+							rowData[6] = dsNhap.get(i)[5]; //so luong ton
+							curModel.addRow(rowData);
+						}
+				    }
+				});
 			}
 		});
 		btnThem.setBounds(10, 11, 110, 28);
@@ -103,30 +116,136 @@ public class HoaDon extends JPanel {
 		panelBtn.add(btnXoa);
 		
 		JButton btnLapHoaDon = new JButton("Lập hóa đơn");
+		btnLapHoaDon.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//lay id khach hang
+				if(kh == null) {
+					JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng!");
+				} else {
+					int idKH = kh.getId();
+					
+					//lay ngay tu datepicker
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+					Calendar c2 = (Calendar) picker.getModel().getValue();
+					
+					String ngaylap = "";
+					
+					if(c2 != null) {
+						ngaylap = sdf.format(c2.getTime());
+					} else {
+						//lay ngay hien tai
+						Date date = new Date();
+						ngaylap = sdf.format(date);
+					}
+					
+					//lay ngay gio hien tai (dung de tao ma hoa don)
+					SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddhhmmss");
+					Date date = new Date();
+					
+					ArrayList<Hoadon> hdList = new ArrayList<Hoadon>();
+					
+					DefaultTableModel curModel = (DefaultTableModel) tblHoaDon.getModel();
+					SachDAO sDAO = new SachDAO();
+					
+					for(int i = 0; i < curModel.getRowCount(); i++) {
+						int idsach = (Integer) curModel.getValueAt(i, 5);
+						int soluongmua = (Integer) curModel.getValueAt(i, 3);
+						int soluongton = (Integer) curModel.getValueAt(i, 6);
+						
+						Hoadon hd = new Hoadon();
+						hd.setMaHoaDon("HD" + sdf2.format(date));
+						hd.setMakhachHang(idKH);
+						hd.setMaSach(idsach);
+						hd.setSoLuong(soluongmua);
+						hd.setNgayLap(ngaylap);
+						hdList.add(hd);
+						sDAO.capNhatSoLuong(idsach, soluongton - soluongmua);
+					}
+					
+					HoaDonDAO hdDAO = new HoaDonDAO();
+					hdDAO.lapHoaDon(hdList);
+					
+					curModel.setRowCount(0);
+				}
+			}
+		});
 		btnLapHoaDon.setBounds(10, 89, 110, 28);
 		panelBtn.add(btnLapHoaDon);
+		
+		JPanel panelHead = new JPanel();
+		panelHead.setBounds(10, 11, 865, 40);
+		add(panelHead);
+		panelHead.setLayout(null);
+		
+		JLabel lblHanBn = new JLabel("HÓA ĐƠN BÁN SÁCH");
+		lblHanBn.setHorizontalAlignment(SwingConstants.CENTER);
+		lblHanBn.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblHanBn.setBounds(95, 0, 673, 40);
+		panelHead.add(lblHanBn);
+		
+		JPanel panelCustomer = new JPanel();
+		panelCustomer.setBounds(10, 62, 430, 40);
+		add(panelCustomer);
+		panelCustomer.setLayout(null);
+		
+		JLabel lblHTnKhch = new JLabel("Họ tên khách hàng:");
+		lblHTnKhch.setBounds(10, 15, 114, 14);
+		panelCustomer.add(lblHTnKhch);
+		
+		txtTenKH = new JTextField();
+		txtTenKH.setEditable(false);
+		txtTenKH.setBounds(134, 12, 215, 20);
+		panelCustomer.add(txtTenKH);
+		txtTenKH.setColumns(10);
+		
+		JButton btnTimKH = new JButton("Tìm");
+		btnTimKH.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DSKhachHang dsKH = new DSKhachHang();
+				dsKH.setVisible(true);
+				
+				dsKH.addWindowListener(new java.awt.event.WindowAdapter() {
+				    @Override
+				    public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+				        kh = dsKH.khSelected;
+				        txtTenKH.setText(kh.getHoTen());
+				    }
+				});
+			}
+		});
+		btnTimKH.setBounds(359, 11, 61, 20);
+		panelCustomer.add(btnTimKH);
+		
+		JPanel panelDateLabel = new JPanel();
+		panelDateLabel.setBounds(472, 62, 121, 40);
+		add(panelDateLabel);
+		panelDateLabel.setLayout(null);
+		
+		JLabel lblNgyLpHa = new JLabel("Ngày lập hóa đơn:");
+		lblNgyLpHa.setBounds(10, 15, 109, 14);
+		panelDateLabel.add(lblNgyLpHa);
+		
+		JPanel panelDatePicker = new JPanel();
+		panelDatePicker.setBounds(603, 71, 213, 31);
+		add(panelDatePicker);
+		panelDatePicker.setLayout(new BorderLayout(0, 0));
 
+		picker.setTextEditable(false);
+		picker.setShowYearButtons(true);
+		panelDatePicker.add((JComponent) picker);
 	}
 	
 	public static DefaultTableModel setDataForTable(ArrayList<Hoadon> data) {
-		String[] columnName = {"STT", "Sách", "Thể loại", "Số lượng", "Đơn giá"};
+		String[] columnName = {"STT", "Sách", "Thể loại", "Số lượng", "Đơn giá", "ID Sách", "Tồn"};
 
-	    DefaultTableModel model = new DefaultTableModel(columnName, 0);
-	    
-	    if(data == null) {
-//	    	Object rowData[] = new Object[1];
-//		    model.addRow(rowData);
-	    }
-	    
-//	    for(int i = 0; i < data.size(); i++) {
-//	    	Object rowData[] = new Object[5];
-//	    	rowData[0] = data.get(i).getMssv();
-//            rowData[1] = data.get(i).getHoten();
-//            rowData[2] = data.get(i).getNamsinh();
-//            rowData[3] = data.get(i).getGioitinh();
-//            rowData[4] = data.get(i).getDiachi();
-//            model.addRow(rowData);
-//	    }
+		DefaultTableModel model = new DefaultTableModel(columnName, 0) {
+	    	@Override
+	        public boolean isCellEditable(int row, int column)
+	        {
+	            // make read only fields except column 1, 2, 3, 4
+	            return false;
+	        }
+	    };
 	    
 	    return model;
 	}
