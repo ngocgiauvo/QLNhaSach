@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 02, 2019 at 01:25 PM
+-- Generation Time: Jun 09, 2019 at 10:04 AM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -201,10 +201,27 @@ CREATE TABLE IF NOT EXISTS `taikhoan` (
 --
 
 INSERT INTO `taikhoan` (`id`, `tenDangNhap`, `matKhau`, `loaiNguoiDung`) VALUES
-(1, 'Nguyễn Thị Kiều Oanh', '1234567', 1),
-(2, 'Võ Thị Ngọc Giàu', '1234567', 1),
-(3, 'Nguyễn Văn A', '1234', 2),
-(4, 'Lê Văn Lan', '1234', 3);
+(1, 'kieu-oanh', '1234567', 1),
+(2, 'ngoc-giau', '1234567', 1),
+(3, 'van-tam', '1234', 2),
+(4, 'hoang-nam', '1234', 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `thanhtoan`
+--
+
+DROP TABLE IF EXISTS `thanhtoan`;
+CREATE TABLE IF NOT EXISTS `thanhtoan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `maHoaDon` varchar(30) COLLATE utf8_vietnamese_ci NOT NULL,
+  `maKhachHang` int(11) NOT NULL,
+  `ngayThanhToan` varchar(30) COLLATE utf8_vietnamese_ci NOT NULL,
+  `tienTra` decimal(10,0) NOT NULL DEFAULT '0',
+  `tienNo` decimal(10,0) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_vietnamese_ci;
 
 -- --------------------------------------------------------
 
@@ -250,7 +267,7 @@ CREATE TABLE IF NOT EXISTS `thutien` (
 --
 
 INSERT INTO `thutien` (`id`, `maKH`, `tienThu`, `ngayThu`) VALUES
-(1, 1, '1000', '20190528');
+(1, 1, '1000', '20190605');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
