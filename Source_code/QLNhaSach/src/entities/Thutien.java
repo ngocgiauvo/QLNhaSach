@@ -1,5 +1,5 @@
 package entities;
-// Generated May 2, 2019 2:17:24 PM by Hibernate Tools 3.5.0.Final
+// Generated Jun 5, 2019 10:57:06 PM by Hibernate Tools 3.5.0.Final
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,20 +16,16 @@ import javax.persistence.Table;
 public class Thutien implements java.io.Serializable {
 
 	private Integer id;
-	private String maHoaDon;
-	private Long tienMua;
+	private Integer maKh;
 	private Long tienThu;
-	private Long noCu;
 	private String ngayThu;
 
 	public Thutien() {
 	}
 
-	public Thutien(String maHoaDon, Long tienMua, Long tienThu, Long noCu, String ngayThu) {
-		this.maHoaDon = maHoaDon;
-		this.tienMua = tienMua;
+	public Thutien(Integer maKh, Long tienThu, String ngayThu) {
+		this.maKh = maKh;
 		this.tienThu = tienThu;
-		this.noCu = noCu;
 		this.ngayThu = ngayThu;
 	}
 
@@ -45,22 +41,13 @@ public class Thutien implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "maHoaDon", length = 30)
-	public String getMaHoaDon() {
-		return this.maHoaDon;
+	@Column(name = "maKH")
+	public Integer getMaKh() {
+		return this.maKh;
 	}
 
-	public void setMaHoaDon(String maHoaDon) {
-		this.maHoaDon = maHoaDon;
-	}
-
-	@Column(name = "tienMua", precision = 11, scale = 0)
-	public Long getTienMua() {
-		return this.tienMua;
-	}
-
-	public void setTienMua(Long tienMua) {
-		this.tienMua = tienMua;
+	public void setMaKh(Integer maKh) {
+		this.maKh = maKh;
 	}
 
 	@Column(name = "tienThu", precision = 11, scale = 0)
@@ -70,15 +57,6 @@ public class Thutien implements java.io.Serializable {
 
 	public void setTienThu(Long tienThu) {
 		this.tienThu = tienThu;
-	}
-
-	@Column(name = "noCu", precision = 11, scale = 0)
-	public Long getNoCu() {
-		return this.noCu;
-	}
-
-	public void setNoCu(Long noCu) {
-		this.noCu = noCu;
 	}
 
 	@Column(name = "ngayThu", length = 50)
