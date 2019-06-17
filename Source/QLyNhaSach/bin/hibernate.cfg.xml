@@ -6,10 +6,19 @@
     <session-factory>
         <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/da_java</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/qlnhasach</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.search.autoregister_listeners">true</property>
         <property name="hibernate.validator.apply_to_ddl">false</property>
+        <mapping class="entities.Hoadon" />
+        <mapping class="entities.Quydinh" />
+        <mapping class="entities.Nhapsach" />
+        <mapping class="entities.Sach" />
+        <mapping class="entities.Taikhoan" />
+        <mapping class="entities.Loainguoidung" />
+        <mapping class="entities.Thutien" />
+        <mapping class="entities.Khachhang" />
+        <mapping class="entities.Theloai" />
     </session-factory>
 </hibernate-configuration>

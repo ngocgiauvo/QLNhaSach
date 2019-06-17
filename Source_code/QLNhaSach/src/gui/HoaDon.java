@@ -119,7 +119,7 @@ public class HoaDon extends JPanel {
 		btnLapHoaDon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//lay id khach hang
-				if(kh == null) {
+				if(kh.getId() == null) {
 					JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng!");
 				} else {
 					int idKH = kh.getId();
@@ -143,17 +143,22 @@ public class HoaDon extends JPanel {
 					Date date = new Date();
 					
 					ArrayList<Hoadon> hdList = new ArrayList<Hoadon>();
+					int tongtien = 0;
 					
 					DefaultTableModel curModel = (DefaultTableModel) tblHoaDon.getModel();
 					SachDAO sDAO = new SachDAO();
+					
+					String maHD = "HD" + sdf2.format(date);
 					
 					for(int i = 0; i < curModel.getRowCount(); i++) {
 						int idsach = (Integer) curModel.getValueAt(i, 5);
 						int soluongmua = (Integer) curModel.getValueAt(i, 3);
 						int soluongton = (Integer) curModel.getValueAt(i, 6);
+						int dongia = (int) curModel.getValueAt(i, 4);
+						tongtien += soluongmua * dongia;
 						
 						Hoadon hd = new Hoadon();
-						hd.setMaHoaDon("HD" + sdf2.format(date));
+						hd.setMaHoaDon(maHD);
 						hd.setMakhachHang(idKH);
 						hd.setMaSach(idsach);
 						hd.setSoLuong(soluongmua);
@@ -165,7 +170,15 @@ public class HoaDon extends JPanel {
 					HoaDonDAO hdDAO = new HoaDonDAO();
 					hdDAO.lapHoaDon(hdList);
 					
+					System.out.println("So tien phai thanh toan " + tongtien);
+					
 					curModel.setRowCount(0);
+					
+					//hien thi man hinh thanh toan
+					if(maHD != null && tongtien > 0) {
+						ThanhToan tt = new ThanhToan(maHD, kh, tongtien);
+						tt.setVisible(true);
+					}
 				}
 			}
 		});
