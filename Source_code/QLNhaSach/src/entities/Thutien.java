@@ -1,5 +1,5 @@
 package entities;
-// Generated Jun 5, 2019 10:57:06 PM by Hibernate Tools 3.5.0.Final
+// Generated Jun 16, 2019 10:41:42 PM by Hibernate Tools 3.5.0.Final
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,13 +17,13 @@ public class Thutien implements java.io.Serializable {
 
 	private Integer id;
 	private Integer maKh;
-	private Long tienThu;
+	private Integer tienThu;
 	private String ngayThu;
 
 	public Thutien() {
 	}
 
-	public Thutien(Integer maKh, Long tienThu, String ngayThu) {
+	public Thutien(Integer maKh, Integer tienThu, String ngayThu) {
 		this.maKh = maKh;
 		this.tienThu = tienThu;
 		this.ngayThu = ngayThu;
@@ -50,12 +50,12 @@ public class Thutien implements java.io.Serializable {
 		this.maKh = maKh;
 	}
 
-	@Column(name = "tienThu", precision = 11, scale = 0)
-	public Long getTienThu() {
+	@Column(name = "tienThu")
+	public Integer getTienThu() {
 		return this.tienThu;
 	}
 
-	public void setTienThu(Long tienThu) {
+	public void setTienThu(Integer tienThu) {
 		this.tienThu = tienThu;
 	}
 

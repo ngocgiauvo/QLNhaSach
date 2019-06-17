@@ -1,5 +1,5 @@
 package entities;
-// Generated May 2, 2019 2:17:24 PM by Hibernate Tools 3.5.0.Final
+// Generated Jun 16, 2019 10:41:42 PM by Hibernate Tools 3.5.0.Final
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,13 +19,13 @@ public class Sach implements java.io.Serializable {
 	private String tenSach;
 	private Integer theLoai;
 	private String tacGia;
-	private Long donGia;
+	private Integer donGia;
 	private Integer soLuong;
 
 	public Sach() {
 	}
 
-	public Sach(String tenSach, Integer theLoai, String tacGia, Long donGia, Integer soLuong) {
+	public Sach(String tenSach, Integer theLoai, String tacGia, Integer donGia, Integer soLuong) {
 		this.tenSach = tenSach;
 		this.theLoai = theLoai;
 		this.tacGia = tacGia;
@@ -72,12 +72,12 @@ public class Sach implements java.io.Serializable {
 		this.tacGia = tacGia;
 	}
 
-	@Column(name = "donGia", precision = 11, scale = 0)
-	public Long getDonGia() {
+	@Column(name = "donGia")
+	public Integer getDonGia() {
 		return this.donGia;
 	}
 
-	public void setDonGia(Long donGia) {
+	public void setDonGia(Integer donGia) {
 		this.donGia = donGia;
 	}
 
